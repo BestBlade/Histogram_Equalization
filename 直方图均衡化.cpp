@@ -18,13 +18,13 @@ Mat histogram_equalization(Mat img) {
 				nums[val]++;
 			}
 		}
-		//¼ÆËã¸ÅÂÊ·Ö²¼
-		float porb[256] = { 0 };
+		//è®¡ç®—æ¦‚ç‡åˆ†å¸ƒ
+		int porb[256] = { 0 };
 		for (int n = 0; n < 256; n++) {
-			porb[n] = nums[n] / float(img.rows * img.cols);
+			porb[n] = nums[n];
 		}
-		//¼ÆËãÀÛ¼Æ·Ö²¼
-		float cdf[256] = { 0 };
+		//è®¡ç®—ç´¯è®¡åˆ†å¸ƒ
+		int cdf[256] = { 0 };
 		for (int n = 0; n < 256; n++) {
 			if (n == 0) {
 				cdf[n] = porb[n];
@@ -33,11 +33,11 @@ Mat histogram_equalization(Mat img) {
 				cdf[n] = porb[n - 1] + cdf[n - 1];
 			}
 		}
-		//»Ò¶ÈÓ³Éä
+		//ç°åº¦æ˜ å°„
 		for (int n = 0; n < 256; n++) {
-			cdf[n] = uchar(255 * cdf[n] + 0.5);
+			cdf[n] = uchar(255 * cdf[n] / (img.rows * img.cols));
 		}
-		//ÖØ¹¹Í¼Æ¬
+		//é‡æ„å›¾ç‰‡
 		for (int x = 0; x < res.rows; x++) {
 			for (int y = 0; y < res.cols; y++) {
 				res.at<uchar>(x, y) = cdf[img.at<uchar>(x, y)];
@@ -45,7 +45,7 @@ Mat histogram_equalization(Mat img) {
 		}
 	}
 	else {
-		//¶ÔÓÚbgrÈı¸öÍ¨µÀ·Ö±ğ²Ù×÷
+		//å¯¹äºbgrä¸‰ä¸ªé€šé“åˆ†åˆ«æ“ä½œ
 		for (int c = 0; c < img.channels(); c++) {
 			int nums[256] = { 0 };
 			for (int x = 0; x < img.rows; x++) {
@@ -54,13 +54,13 @@ Mat histogram_equalization(Mat img) {
 					nums[val]++;
 				}
 			}
-			//¼ÆËã¸ÅÂÊ·Ö²¼
-			float porb[256] = { 0 };
+			//è®¡ç®—æ¦‚ç‡åˆ†å¸ƒ
+			int porb[256] = { 0 };
 			for (int n = 0; n < 256; n++) {
-				porb[n] = nums[n] / float(img.rows * img.cols);
+				porb[n] = nums[n];
 			}
-			//¼ÆËãÀÛ¼Æ·Ö²¼
-			float cdf[256] = { 0 };
+			//è®¡ç®—ç´¯è®¡åˆ†å¸ƒ
+			int cdf[256] = { 0 };
 			for (int n = 0; n < 256; n++) {
 				if (n == 0) {
 					cdf[n] = porb[n];
@@ -69,11 +69,11 @@ Mat histogram_equalization(Mat img) {
 					cdf[n] = porb[n - 1] + cdf[n - 1];
 				}
 			}
-			//»Ò¶ÈÓ³Éä
+			//ç°åº¦æ˜ å°„
 			for (int n = 0; n < 256; n++) {
-				cdf[n] = uchar(255 * cdf[n] + 0.5);
+				cdf[n] = uchar(255 * cdf[n] / (img.rows * img.cols));			/*	æœ€åå†è®¡ç®—æ¦‚ç‡ï¼Œå¯ä»¥åŠ å¿«è¿è¡Œ	S*/
 			}
-			//ÖØ¹¹Í¼Æ¬
+			//é‡æ„å›¾ç‰‡
 			for (int x = 0; x < res.rows; x++) {
 				for (int y = 0; y < res.cols; y++) {
 					res.at<Vec3b>(x, y)[c] = cdf[img.at<Vec3b>(x, y)[c]];
@@ -85,7 +85,7 @@ Mat histogram_equalization(Mat img) {
 }
 
 int main() {
-	Mat img = imread("C://Users//Chrysanthemum//Desktop//1.png", 1);
+	Mat img = imread("C://Users//Chrysanthemum//Desktop//1.png",0);
 
 	Mat res = histogram_equalization(img);
 	//Mat res(img.rows, img.cols, img.type());
